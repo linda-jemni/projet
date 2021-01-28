@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+    db:
+        image: mysql:8.0
+        volumes:
+            - "./mysql:/var/lib/mysql"
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        ports:
+            - 127.0.0.1:3306:3306
+        restart: always
+        networks:
+            - myDb
+
+    php:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        restart: always
+        volumes: 
+            - ./app/:/var/www/html
+        networks:
+            - myDb
+    nginx:
+        build:
+            context: .
+            dockerfile: docker/nginx/Dockerfile
+        restart: always
+        ports:
+            - 80:80
+        volumes: 
+            - ./app/:/var/www/html
+        networks:
+            - myDb
+
+networks:
+    myDb:

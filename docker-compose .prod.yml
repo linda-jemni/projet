@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+    db:
+        image: mysql:8.0
+        volumes:
+            - "./mysql:/var/lib/mysql"
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        ports:
+            - 3306:3306
+        restart: always
+        networks:
+            - myDb
+
+    php:
+        image: ljemni/php:1.0.0
+        restart: always
+        env_file: 
+            -./.env.prod
+        volumes: 
+            - ./app/:/var/www/html
+        networks:
+            - myDb
+    nginx:
+        image: ljemni/nginx:1.0.0
+        restart: always
+        env_file: 
+            -./.env.prod
+        ports:
+            - 80:80
+        volumes: 
+            - ./app/:/var/www/html
+        networks:
+            - myDb
+        image: ljemni/docker-image:1.0.0
+
+networks:
+    myDb:
