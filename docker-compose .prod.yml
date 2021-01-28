@@ -36,7 +36,6 @@ services:
             - ./app/:/var/www/html
         networks:
             - myDb
-        image: ljemni/docker-image:1.0.0
 
 networks:
     myDb:
